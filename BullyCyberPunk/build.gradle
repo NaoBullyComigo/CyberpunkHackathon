@@ -21,11 +21,17 @@ sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
 
 dependencies {
+
+	
 	compile('org.springframework.boot:spring-boot-starter-amqp')
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile('com.ibm.watson.developer_cloud:conversation:4.2.1');
+	
+	
 }
