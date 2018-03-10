@@ -32,6 +32,9 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compile('com.ibm.watson.developer_cloud:conversation:4.2.1');
+	compile 'com.ibm.watson.developer_cloud:java-sdk:4.2.1'
 	
 	
 }
+
+

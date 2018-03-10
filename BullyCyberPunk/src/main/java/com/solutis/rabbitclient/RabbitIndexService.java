@@ -13,10 +13,8 @@ public class RabbitIndexService {
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 
-	@Value("${rabbit.processamento.queue}")
 	private String queue;
 
-	@Value("${rabbit.processamento.exchange}")
 	private String exchange;
 
 	public void sendMessage(MensagemUsuario mensagemUsuario) {

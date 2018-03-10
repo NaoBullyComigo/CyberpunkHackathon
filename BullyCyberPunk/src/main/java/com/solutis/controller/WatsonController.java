@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cyberpunk.bully;
+package com.solutis.controller;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -21,16 +21,25 @@ import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.Ke
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.KeywordsResult;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.RelationsOptions;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.TargetedEmotionResults;
+import com.solutis.service.FirebaseService;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author mnmat
  */
+@Component
 public class WatsonController {
-     public JsonObject analyzeText(String text){
+	@Autowired
+	FirebaseService servicoFire;
+	
+	public JsonObject analyzeText(String text){
         String translatedText = translateText(text);      
         
         NaturalLanguageUnderstanding service = new NaturalLanguageUnderstanding(
@@ -80,7 +89,11 @@ public class WatsonController {
         .analyze(parameters)
         .execute();
         
-        return formataJson(response, Arrays.asList(focusWords));
+        JsonObject objeto = formataJson(response, Arrays.asList(focusWords));
+        
+        servicoFire.enviarObjetoFirebase(objeto.toString());
+        
+        return objeto;
     }
     
     private String translateText(String text){

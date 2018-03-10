@@ -1,5 +1,6 @@
 package com.solutis.DTO;
 
+import com.google.gson.JsonObject;
 import com.ibm.watson.developer_cloud.conversation.v1.model.Context;
 
 public class Mensagem {
@@ -7,7 +8,13 @@ public class Mensagem {
 	private int id;
 	private String descricao;
 	private Context context;
-	
+	private String resposta;
+	public String getResposta() {
+		return resposta;
+	}
+	public void setResposta(String resposta) {
+		this.resposta = resposta;
+	}
 	public int getId() {
 		return id;
 	}

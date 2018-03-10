@@ -13,6 +13,8 @@ import com.solutis.service.WatsonService;
 @SpringBootApplication
 @ComponentScan("com.solutis.controller")
 @ComponentScan("com.solutis.service")
+@ComponentScan("com.solutis.rabbitclient")
+//@ComponentScan("com.solutis.consumer")
 public class CyberPunkApplication {
 	
 	@Autowired

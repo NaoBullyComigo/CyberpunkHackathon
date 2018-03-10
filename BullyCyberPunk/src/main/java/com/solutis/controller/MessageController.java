@@ -25,6 +25,7 @@ import com.solutis.service.WatsonService;
 public class MessageController {
 
 	private static Context contexto = null;
+	private static String mensagemCompleta = null;
 	
 	protected MultiValueMap<String, String> getHTTPHeader(){
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
@@ -43,16 +44,23 @@ public class MessageController {
 	@Autowired
 	RabbitIndexService servicoRabbit;
 	
+	@Autowired
+	WatsonController watsonController;
+	
 	@PostMapping
 	
 	public ResponseEntity<?> receiveMessage(@RequestBody MensagemUsuario message) {
 		try {
 		MessageResponse resposta = servico.enviarMensagem(message.getDescricao(), contexto);
 		MensagemUsuario mensagemUsuario = new MensagemUsuario();
+		mensagemCompleta += " " + message.getDescricao();
 		this.contexto = resposta.getContext();
 		mensagemUsuario.setIdUsuario(2);
 		mensagemUsuario.setDescricao(resposta.getOutput().getText().get(0));
-		servicoRabbit.sendMessage(mensagemUsuario);
+		if (mensagemCompleta.contains("Tchau")) {
+			watsonController.analyzeText(mensagemCompleta);
+		}
+//		servicoRabbit.sendMessage(mensagemUsuario);
 		return new ResponseEntity<MensagemUsuario>(mensagemUsuario, getHTTPHeader(), HttpStatus.CREATED);
 		} catch (Exception e) {
 		return new ResponseEntity<String>("A mensagem falhou!", getHTTPHeader(), HttpStatus.CREATED);	
