@@ -1,15 +1,11 @@
 package com.solutis.consumer;
 
-import java.util.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.solutis.DTO.Mensagem;
-import com.solutis.service.FirebaseService;
 
 @Component
 public class MessageConsumer {
