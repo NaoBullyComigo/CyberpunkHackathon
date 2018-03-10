@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ibm.watson.developer_cloud.conversation.v1.model.Context;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
 import com.solutis.DTO.Mensagem;
+import com.solutis.DTO.MensagemUsuario;
+import com.solutis.rabbitclient.RabbitIndexService;
 import com.solutis.service.FirebaseService;
 import com.solutis.service.WatsonService;
 
@@ -20,6 +23,8 @@ import com.solutis.service.WatsonService;
 @RequestMapping("mensagem")
 @Component
 public class MessageController {
+
+	private static Context contexto = null;
 	
 	protected MultiValueMap<String, String> getHTTPHeader(){
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
@@ -35,15 +40,20 @@ public class MessageController {
 	@Autowired
 	FirebaseService servicoFire;
 	
+	@Autowired
+	RabbitIndexService servicoRabbit;
+	
 	@PostMapping
 	
-	public ResponseEntity<?> receiveMessage(@RequestBody Mensagem message) {
+	public ResponseEntity<?> receiveMessage(@RequestBody MensagemUsuario message) {
 		try {
-			
-		MessageResponse resposta = servico.enviarMensagem(message.getDescricao(), message.getContext());
-		resposta.getOutput().getText();
-		servicoFire.enviarObjetoFirebase();
-		return new ResponseEntity<MessageResponse>(resposta, getHTTPHeader(), HttpStatus.CREATED);
+		MessageResponse resposta = servico.enviarMensagem(message.getDescricao(), contexto);
+		MensagemUsuario mensagemUsuario = new MensagemUsuario();
+		this.contexto = resposta.getContext();
+		mensagemUsuario.setIdUsuario(2);
+		mensagemUsuario.setDescricao(resposta.getOutput().getText().get(0));
+		servicoRabbit.sendMessage(mensagemUsuario);
+		return new ResponseEntity<MensagemUsuario>(mensagemUsuario, getHTTPHeader(), HttpStatus.CREATED);
 		} catch (Exception e) {
 		return new ResponseEntity<String>("A mensagem falhou!", getHTTPHeader(), HttpStatus.CREATED);	
 		}
